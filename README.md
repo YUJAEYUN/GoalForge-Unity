@@ -17,14 +17,14 @@
 
 ## 🎮 주요 기능 (Features)
 
-### 🔷 **1. Start Scene**
+### 🔷 **1. TitleScene**
 - 게임 시작, 옵션, 종료 버튼
 - 버튼 Hover/Click 상호작용 적용 (Color Tint)
 - TeamSelectScene으로 자연스러운 씬 전환
 
 ---
 
-### 🔷 **2. Team Select Scene**
+### 🔷 **2. TeamScene**
 - 플레이어가 사용할 팀 선택
 - 선택 시 버튼 하이라이트 효과
 - Confirm 버튼 활성화 / 비활성화 제어
@@ -32,14 +32,14 @@
 
 ---
 
-### 🔷 **3. Coin Toss Scene**
+### 🔷 **3. CoinScene**
 - 동전 던지기 애니메이션
 - 승패에 따라 킥오프 팀 결정
 - MainScene에 결과 전달
 
 ---
 
-### 🔷 **4. Main Match Scene**
+### 🔷 **4. MainScene**
 - 경기장 구조, 포지션 배치
 - 타이머(전반 / 후반), 점수판 UI
 - 플레이어 조작
