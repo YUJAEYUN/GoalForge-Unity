@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class BtnCtrl : MonoBehaviour
 {
-    // 버튼 클릭 시 호출할 함수들
     public void OnClickNext()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
