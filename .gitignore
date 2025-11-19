@@ -19,19 +19,3 @@ MemoryCaptures/
 *.mdb
 *.opendb
 *.VC.db
-
-# ---- 3D 모델 파일 무시 ----
-*.obj
-*.blend
-*.glb
-*.gltf
-*.dae
-*.3ds
-*.dxf
-*.ply
-*.stl
-*.max
-/Library
-/Library
-*.meta
-/Library
