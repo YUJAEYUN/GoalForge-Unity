@@ -74,6 +74,25 @@ public class GameManager : MonoBehaviour
         
         SpawnPlayers();
         SpawnBall();
+        SetupCamera();
+    }
+
+    void SetupCamera()
+    {
+        Camera cam = Camera.main;
+        if (cam != null)
+        {
+            CameraFollow follow = cam.GetComponent<CameraFollow>();
+            if (follow == null)
+            {
+                follow = cam.gameObject.AddComponent<CameraFollow>();
+            }
+            
+            if (ballInstance != null)
+            {
+                follow.target = ballInstance.transform;
+            }
+        }
     }
     
     void SpawnPlayers()
@@ -166,6 +185,17 @@ public class GameManager : MonoBehaviour
     public void OnGoalScored(int scoringPlayer)
     {
         if (!isGameActive) return;
+
+        // Trigger Camera Shake
+        Camera cam = Camera.main;
+        if (cam != null)
+        {
+            CameraFollow follow = cam.GetComponent<CameraFollow>();
+            if (follow != null)
+            {
+                follow.TriggerShake(0.5f, 0.3f); // Shake for 0.5s with 0.3 magnitude
+            }
+        }
         
         if (scoringPlayer == 1)
         {
@@ -182,6 +212,16 @@ public class GameManager : MonoBehaviour
             return;
         }
         
+        StartCoroutine(GoalSequence());
+    }
+
+    System.Collections.IEnumerator GoalSequence()
+    {
+        // Hit Stop Effect
+        Time.timeScale = 0.05f;
+        yield return new WaitForSecondsRealtime(0.5f); // Realtime 0.5s (perceived as short freeze)
+        Time.timeScale = 1f;
+
         ResetPositions();
     }
     

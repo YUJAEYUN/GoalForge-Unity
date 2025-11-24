@@ -46,6 +46,20 @@ public class Ball : MonoBehaviour
         {
             sr.sortingOrder = 2;
         }
+
+        // Add TrailRenderer for polish
+        TrailRenderer trail = GetComponent<TrailRenderer>();
+        if (trail == null)
+        {
+            trail = gameObject.AddComponent<TrailRenderer>();
+            trail.time = 0.3f;
+            trail.startWidth = 0.3f;
+            trail.endWidth = 0f;
+            trail.material = new Material(Shader.Find("Sprites/Default"));
+            trail.startColor = new Color(1f, 1f, 1f, 0.5f);
+            trail.endColor = new Color(1f, 1f, 1f, 0f);
+            trail.sortingOrder = 1;
+        }
     }
     
     void Start()
