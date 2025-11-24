@@ -88,9 +88,9 @@ public class Stadium2D : MonoBehaviour
     
     void CreateGoals()
     {
-        CreateGoal("GoalRight", new Vector2(8f, 0f), 1, 90f);
+        CreateGoal("GoalRight", new Vector2(8f, 0f), 2, 90f);
 
-        CreateGoal("GoalLeft", new Vector2(-8f, 0f), 2, 90f);
+        CreateGoal("GoalLeft", new Vector2(-8f, 0f), 1, 90f);
     }
 
     void CreateGoal(string name, Vector2 position, int goalOwner, float rotationZ = 0f)

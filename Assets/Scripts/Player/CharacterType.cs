@@ -74,18 +74,16 @@ public class CharacterType : MonoBehaviour
     
     void ActivateGeodainoSuperMode()
     {
-        transform.localScale = originalScale * 2f;
-        
+        transform.localScale = originalScale * 3f;
+
         if (playerController != null)
         {
-            playerController.superModeSpeedMultiplier = 0.8f; // -20%
+            playerController.superModeSpeedMultiplier = 0.5f;
             playerController.superModeJumpMultiplier = 1f;
             playerController.isSuperMode = true;
         }
-        
-        Debug.Log("Geodaino Super Mode: Size x2, Speed -20%");
     }
-    
+
     void ActivateLightningmanSuperMode()
     {
         transform.localScale = originalScale * 0.8f;
