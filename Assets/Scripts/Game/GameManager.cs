@@ -82,6 +82,11 @@ public class GameManager : MonoBehaviour
         {
             Vector3 pos1 = new Vector3(player1StartPos.x, player1StartPos.y, 0f);
             player1Instance = Instantiate(player1Prefab, pos1, Quaternion.identity);
+            PlayerController pc1 = player1Instance.GetComponent<PlayerController>();
+            if (pc1 != null)
+            {
+                pc1.SetPlayerNumber(1);
+            }
 
             AddSpriteToPlayer(player1Instance, Color.red, "Player1");
             Debug.Log($"Player1 spawned at {pos1}");
@@ -95,6 +100,11 @@ public class GameManager : MonoBehaviour
         {
             Vector3 pos2 = new Vector3(player2StartPos.x, player2StartPos.y, 0f);
             player2Instance = Instantiate(player2Prefab, pos2, Quaternion.identity);
+            PlayerController pc2 = player2Instance.GetComponent<PlayerController>();
+            if (pc2 != null)
+            {
+                pc2.SetPlayerNumber(2);
+            }
 
             AddSpriteToPlayer(player2Instance, Color.blue, "Player2");
             Debug.Log($"Player2 spawned at {pos2}");

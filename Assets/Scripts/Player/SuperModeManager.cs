@@ -5,9 +5,11 @@ public class SuperModeManager : MonoBehaviour
 {
     [Header("Gauge Settings")]
     [SerializeField] private float maxGauge = 100f;
-    [SerializeField] private float autoChargeRate = 1f; // 1점/초
-    [SerializeField] private float ballTouchBonus = 10f;
-    
+    [SerializeField] private float autoChargeRate = 1f;
+    [SerializeField, Range(0f, 1f)] private float ballTouchBonusPercent = 0.1f; // 공에 닿을 때 최대 게이지의 비율 (0.1 = 10%)
+
+    private const float AutoChargeSpeedMultiplier = 5f;
+
     [Header("Super Mode Settings")]
     [SerializeField] private float superModeDuration = 3f;
     [SerializeField] private float superModeCooldown = 8f;
@@ -56,63 +58,91 @@ public class SuperModeManager : MonoBehaviour
     void Update()
     {
         if (GameManager.Instance != null && !GameManager.Instance.IsGameActive())
+        {
+            //Debug.Log("[SuperModeManager] Game not active - skipping gauge update");
             return;
-        
+        }
+
         AutoChargeGauge();
-        
+
         CheckAndActivateSuperMode();
     }
-    
+
     void AutoChargeGauge()
     {
+        float rate = autoChargeRate * AutoChargeSpeedMultiplier;
+
         if (!player1InSuperMode && player1Gauge < maxGauge)
         {
-            player1Gauge += autoChargeRate * Time.deltaTime;
+            player1Gauge += rate * Time.deltaTime;
             player1Gauge = Mathf.Min(player1Gauge, maxGauge);
         }
-        
+
         if (!player2InSuperMode && player2Gauge < maxGauge)
         {
-            player2Gauge += autoChargeRate * Time.deltaTime;
+            player2Gauge += rate * Time.deltaTime;
             player2Gauge = Mathf.Min(player2Gauge, maxGauge);
         }
     }
-    
+
     void CheckAndActivateSuperMode()
     {
         if (player1Gauge >= maxGauge && !player1InSuperMode)
         {
-            float timeSinceLastSuperMode = Time.time - player1LastSuperModeTime;
-            if (timeSinceLastSuperMode >= superModeCooldown)
-            {
-                ActivateSuperMode(1);
-            }
+            ActivateSuperMode(1);
         }
-        
+
         if (player2Gauge >= maxGauge && !player2InSuperMode)
         {
-            float timeSinceLastSuperMode = Time.time - player2LastSuperModeTime;
-            if (timeSinceLastSuperMode >= superModeCooldown)
-            {
-                ActivateSuperMode(2);
-            }
+            ActivateSuperMode(2);
         }
     }
-    
+
     public void OnBallTouch(PlayerController player)
     {
-        if (player == player1 && !player1InSuperMode)
+        if (player == null)
         {
-            player1Gauge += ballTouchBonus;
-            player1Gauge = Mathf.Min(player1Gauge, maxGauge);
+            Debug.LogWarning("[SuperModeManager] OnBallTouch called with null player");
+            return;
         }
-        else if (player == player2 && !player2InSuperMode)
+
+        int playerNumber = player.GetPlayerNumber();
+
+        if (playerNumber == 1 && !player1InSuperMode)
         {
-            player2Gauge += ballTouchBonus;
+            if (player1 == null)
+            {
+                player1 = player;
+                Debug.Log("[SuperModeManager] Bound player1 reference to " + player.name);
+            }
+
+            float bonus = maxGauge * ballTouchBonusPercent;
+            player1Gauge += bonus;
+            player1Gauge = Mathf.Min(player1Gauge, maxGauge);
+            Debug.Log("[SuperModeManager] Ball touched by Player1, gauge=" + player1Gauge);
+        }
+        else if (playerNumber == 2 && !player2InSuperMode)
+        {
+            if (player2 == null)
+            {
+                player2 = player;
+                Debug.Log("[SuperModeManager] Bound player2 reference to " + player.name);
+            }
+
+            float bonus = maxGauge * ballTouchBonusPercent;
+            player2Gauge += bonus;
             player2Gauge = Mathf.Min(player2Gauge, maxGauge);
+            Debug.Log("[SuperModeManager] Ball touched by Player2, gauge=" + player2Gauge);
+        }
+        else
+        {
+            Debug.Log("[SuperModeManager] OnBallTouch by player not matched to player1/player2 or currently in super mode. " +
+                      "player=" + player.name + ", playerNumber=" + playerNumber +
+                      ", player1=" + (player1 != null ? player1.name : "null") +
+                      ", player2=" + (player2 != null ? player2.name : "null"));
         }
     }
-    
+
     void ActivateSuperMode(int playerNumber)
     {
         if (playerNumber == 1 && player1 != null)
@@ -193,6 +223,7 @@ public class SuperModeManager : MonoBehaviour
     
     public float GetPlayer1Gauge() => player1Gauge;
     public float GetPlayer2Gauge() => player2Gauge;
+    public float GetMaxGauge() => maxGauge;
     public bool IsPlayer1InSuperMode() => player1InSuperMode;
     public bool IsPlayer2InSuperMode() => player2InSuperMode;
 }

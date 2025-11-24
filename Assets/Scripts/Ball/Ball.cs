@@ -85,19 +85,27 @@ public class Ball : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player1") || collision.gameObject.CompareTag("Player2"))
+        PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+
+        if (player != null)
         {
+            Debug.Log("[Ball] Collision with player " + player.name + " (tag=" + collision.gameObject.tag + ")");
             lastGroundTouchTime = Time.time;
 
-            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            if (player != null)
+            SuperModeManager superModeManager = Object.FindAnyObjectByType<SuperModeManager>();
+            if (superModeManager != null)
             {
-                SuperModeManager superModeManager = Object.FindAnyObjectByType<SuperModeManager>();
-                if (superModeManager != null)
-                {
-                    superModeManager.OnBallTouch(player);
-                }
+                Debug.Log("[Ball] Calling SuperModeManager.OnBallTouch for " + player.name);
+                superModeManager.OnBallTouch(player);
             }
+            else
+            {
+                Debug.LogWarning("[Ball] SuperModeManager not found in scene");
+            }
+        }
+        else
+        {
+            Debug.Log("[Ball] Collision with non-player " + collision.gameObject.name + " (tag=" + collision.gameObject.tag + ")");
         }
     }
 

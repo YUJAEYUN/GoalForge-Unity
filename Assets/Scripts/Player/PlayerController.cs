@@ -18,7 +18,11 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isSuperMode = false;
     [HideInInspector] public float superModeSpeedMultiplier = 1f;
     [HideInInspector] public float superModeJumpMultiplier = 1f;
-    
+
+    public int GetPlayerNumber() => playerNumber;
+    public void SetPlayerNumber(int number) => playerNumber = number;
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -50,17 +54,6 @@ public class PlayerController : MonoBehaviour
         if (playerNumber == 1)
         {
             horizontalInput = 0f;
-            if (Input.GetKey(KeyCode.LeftArrow)) horizontalInput = -1f;
-            if (Input.GetKey(KeyCode.RightArrow)) horizontalInput = 1f;
-
-            if (Input.GetKeyDown(KeyCode.RightShift) && Time.time >= lastDashTime + dashCooldown)
-            {
-                Dash();
-            }
-        }
-        else if (playerNumber == 2)
-        {
-            horizontalInput = 0f;
             if (Input.GetKey(KeyCode.A)) horizontalInput = -1f;
             if (Input.GetKey(KeyCode.D)) horizontalInput = 1f;
 
@@ -69,8 +62,19 @@ public class PlayerController : MonoBehaviour
                 Dash();
             }
         }
+        else if (playerNumber == 2)
+        {
+            horizontalInput = 0f;
+            if (Input.GetKey(KeyCode.LeftArrow)) horizontalInput = -1f;
+            if (Input.GetKey(KeyCode.RightArrow)) horizontalInput = 1f;
+
+            if (Input.GetKeyDown(KeyCode.RightShift) && Time.time >= lastDashTime + dashCooldown)
+            {
+                Dash();
+            }
+        }
     }
-    
+
     void Move()
     {
         float currentSpeed = moveSpeed * superModeSpeedMultiplier;
@@ -79,13 +83,13 @@ public class PlayerController : MonoBehaviour
 
         if (playerNumber == 1)
         {
-            if (Input.GetKey(KeyCode.UpArrow)) moveY = 1f;
-            if (Input.GetKey(KeyCode.DownArrow)) moveY = -1f;
+            if (Input.GetKey(KeyCode.W)) moveY = 1f;
+            if (Input.GetKey(KeyCode.S)) moveY = -1f;
         }
         else if (playerNumber == 2)
         {
-            if (Input.GetKey(KeyCode.W)) moveY = 1f;
-            if (Input.GetKey(KeyCode.S)) moveY = -1f;
+            if (Input.GetKey(KeyCode.UpArrow)) moveY = 1f;
+            if (Input.GetKey(KeyCode.DownArrow)) moveY = -1f;
         }
         moveY *= currentSpeed;
         rb.linearVelocity = new Vector2(moveX, moveY);
@@ -115,12 +119,22 @@ public class PlayerController : MonoBehaviour
             if (ball != null)
             {
                 Vector2 kickDirection = (collision.transform.position - transform.position).normalized;
-                float kickPower = 6f * (isSuperMode ? 1.5f : 1f);
+                float kickPower = 3.5f * (isSuperMode ? 1.2f : 1f);
                 ball.Kick(kickDirection * kickPower);
 
                 if (SoundManager.Instance != null)
                 {
                     SoundManager.Instance.PlayKickSound();
+                }
+                SuperModeManager superModeManager = Object.FindAnyObjectByType<SuperModeManager>();
+                if (superModeManager != null)
+                {
+                    Debug.Log("[PlayerController] Notifying SuperModeManager.OnBallTouch for " + name);
+                    superModeManager.OnBallTouch(this);
+                }
+                else
+                {
+                    Debug.LogWarning("[PlayerController] SuperModeManager not found in scene");
                 }
             }
         }
