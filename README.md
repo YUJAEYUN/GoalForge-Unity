@@ -193,10 +193,12 @@
 
 ## �️ 기술 스택
 
-- **Engine**: Unity 2022.3 LTS
+- **Engine**: Unity 6 (6000.1.12f1)
 - **Language**: C#
 - **Physics**: Unity 2D Physics
 - **UI**: TextMeshPro, Unity UI
+- **CI/CD**: GitHub Actions
+- **Deployment**: GitHub Pages
 
 ---
 
@@ -237,10 +239,57 @@ Assets/
 
 ## 🚀 시작하기
 
+### 로컬 개발
+
 1. Unity Hub에서 프로젝트 열기
 2. `MainScene` 씬 로드
 3. Play 버튼 클릭
 4. 친구와 함께 플레이!
+
+### 웹 배포 (GitHub Actions)
+
+이 프로젝트는 `main` 브랜치에 푸시할 때마다 자동으로 WebGL 빌드 후 GitHub Pages에 배포됩니다.
+
+#### 초기 설정 (최초 1회만)
+
+1. **Unity 라이선스 활성화 파일 생성**
+
+   - GitHub 저장소의 Actions 탭으로 이동
+   - "Acquire activation file" workflow 선택
+   - "Run workflow" 클릭
+   - 완료되면 Artifacts에서 `.alf` 파일 다운로드
+
+2. **Unity 라이선스 파일 받기**
+
+   - https://license.unity3d.com/manual 접속
+   - 다운로드한 `.alf` 파일 업로드
+   - Personal 라이선스 선택
+   - `.ulf` 라이선스 파일 다운로드
+
+3. **GitHub Secrets 설정**
+
+   - 저장소 Settings → Secrets and variables → Actions
+   - 다음 3개의 Secret 추가:
+     - `UNITY_EMAIL`: Unity 계정 이메일
+     - `UNITY_PASSWORD`: Unity 계정 비밀번호
+     - `UNITY_LICENSE`: `.ulf` 파일 내용 전체 복사 붙여넣기
+
+4. **GitHub Pages 활성화**
+   - 저장소 Settings → Pages
+   - Source: "Deploy from a branch" 선택
+   - Branch: `gh-pages` 선택, `/ (root)` 선택
+   - Save 클릭
+
+#### 배포 방법
+
+```bash
+git add .
+git commit -m "Update game"
+git push origin main
+```
+
+푸시 후 GitHub Actions에서 자동으로 빌드 및 배포가 진행됩니다.
+배포 완료 후 `https://<username>.github.io/<repository-name>/` 에서 게임을 플레이할 수 있습니다.
 
 ---
 
