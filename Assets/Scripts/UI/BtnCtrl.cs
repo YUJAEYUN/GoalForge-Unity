@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class BtnCtrl : MonoBehaviour
 {
-    public void OnClickNext()
+    public void OnClickStartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene("MainScene");
     }
     
      public void OnClickTitle()
