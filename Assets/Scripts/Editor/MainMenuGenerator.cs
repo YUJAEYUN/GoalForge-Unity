@@ -199,7 +199,7 @@ public class MainMenuGenerator : MonoBehaviour
             }
         }
     }
-    }
+
 
     private static Sprite LoadSprite(string path)
     {
