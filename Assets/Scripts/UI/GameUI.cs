@@ -289,6 +289,11 @@ public class GameUI : MonoBehaviour
             {
                 goalText = goalObj.GetComponent<TextMeshProUGUI>();
             }
+            else
+            {
+                Debug.LogWarning("[GameUI] GoalText object not found. Creating one dynamically...");
+                CreateGoalText();
+            }
         }
 
         if (goalText != null)
@@ -298,8 +303,35 @@ public class GameUI : MonoBehaviour
         }
         else
         {
-            Debug.LogError("[GameUI] goalText is still null! Cannot show goal text.");
+            Debug.LogError("[GameUI] Failed to create GoalText!");
         }
+    }
+
+    void CreateGoalText()
+    {
+        GameObject goalObj = new GameObject("GoalText");
+        goalObj.transform.SetParent(this.transform, false);
+        
+        goalText = goalObj.AddComponent<TextMeshProUGUI>();
+        goalText.text = "GOAL!!!!!";
+        goalText.fontSize = 120;
+        goalText.alignment = TextAlignmentOptions.Center;
+        goalText.color = Color.yellow;
+        goalText.fontStyle = FontStyles.Bold | FontStyles.Italic;
+        
+        // Add outline
+        goalText.outlineColor = Color.black;
+        goalText.outlineWidth = 0.5f;
+        
+        RectTransform rt = goalText.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.5f, 0.5f);
+        rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = new Vector2(800, 300);
+        rt.anchoredPosition = Vector2.zero;
+        
+        goalObj.SetActive(false);
+        Debug.Log("[GameUI] Created GoalText dynamically.");
     }
 
     System.Collections.IEnumerator ShowGoalTextCoroutine()

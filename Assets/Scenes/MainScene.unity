@@ -1551,12 +1551,15 @@ MonoBehaviour:
   player1SuperText: {fileID: 0}
   player2SuperText: {fileID: 0}
   resultText: {fileID: 799951139}
+  goalText: {fileID: 0}
   pauseMenuPanel: {fileID: 0}
   resumeButton: {fileID: 0}
   restartButton: {fileID: 0}
   quitButton: {fileID: 0}
   screenBorderEffect: {fileID: 0}
   borderPulseSpeed: 2
+  player1PowerUpText: {fileID: 0}
+  player2PowerUpText: {fileID: 0}
 --- !u!114 &2133834939
 MonoBehaviour:
   m_ObjectHideFlags: 0
