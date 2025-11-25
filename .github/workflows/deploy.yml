@@ -26,6 +26,14 @@ jobs:
           restore-keys: |
             Library-
 
+      # Free Disk Space
+      - name: Free Disk Space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       # Build
       - name: Build WebGL
         uses: game-ci/unity-builder@v4
@@ -63,5 +71,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: ./build/WebGL
           force_orphan: true

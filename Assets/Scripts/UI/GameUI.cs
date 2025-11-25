@@ -26,6 +26,7 @@ public class GameUI : MonoBehaviour
 
     [Header("Result UI")]
     [SerializeField] private TextMeshProUGUI resultText;
+    [SerializeField] private TextMeshProUGUI goalText;
 
     [Header("Pause Menu")]
     [SerializeField] private GameObject pauseMenuPanel;
@@ -276,6 +277,113 @@ public class GameUI : MonoBehaviour
         {
             StartCoroutine(ShowPowerUpCoroutine(player2PowerUpText, effectName, duration));
         }
+    }
+
+    public void ShowGoalText()
+    {
+        if (goalText == null)
+        {
+            Debug.LogWarning("[GameUI] goalText is null, attempting to find it...");
+            GameObject goalObj = GameObject.Find("GoalText"); // Assuming the object is named "GoalText"
+            if (goalObj != null)
+            {
+                goalText = goalObj.GetComponent<TextMeshProUGUI>();
+            }
+            else
+            {
+                Debug.LogWarning("[GameUI] GoalText object not found. Creating one dynamically...");
+                CreateGoalText();
+            }
+        }
+
+        if (goalText != null)
+        {
+            Debug.Log("[GameUI] ShowGoalText called - Starting Coroutine");
+            StartCoroutine(ShowGoalTextCoroutine());
+        }
+        else
+        {
+            Debug.LogError("[GameUI] Failed to create GoalText!");
+        }
+    }
+
+    void CreateGoalText()
+    {
+        GameObject goalObj = new GameObject("GoalText");
+        goalObj.transform.SetParent(this.transform, false);
+        
+        goalText = goalObj.AddComponent<TextMeshProUGUI>();
+        goalText.text = "GOAL!!!!!";
+        goalText.fontSize = 120;
+        goalText.alignment = TextAlignmentOptions.Center;
+        goalText.color = Color.yellow;
+        goalText.fontStyle = FontStyles.Bold | FontStyles.Italic;
+        
+        // Add outline
+        goalText.outlineColor = Color.black;
+        goalText.outlineWidth = 0.5f;
+        
+        RectTransform rt = goalText.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.5f, 0.5f);
+        rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = new Vector2(800, 300);
+        rt.anchoredPosition = Vector2.zero;
+        
+        goalObj.SetActive(false);
+        Debug.Log("[GameUI] Created GoalText dynamically.");
+    }
+
+    System.Collections.IEnumerator ShowGoalTextCoroutine()
+    {
+        goalText.text = "GOAL!!!!!";
+        goalText.gameObject.SetActive(true);
+        goalText.transform.localScale = Vector3.zero;
+        
+        // Reset rotation
+        goalText.transform.localRotation = Quaternion.identity;
+
+        float duration = 0.6f;
+        float elapsed = 0f;
+
+        // Pop in with rotation
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+            
+            // Elastic ease out for scale
+            float scale = Mathf.Sin(-13 * (progress + 1) * Mathf.PI / 2) * Mathf.Pow(2, -10 * progress) + 1;
+            goalText.transform.localScale = Vector3.one * scale;
+            
+            // Spin effect
+            float rotation = Mathf.Lerp(360f, 0f, 1f - Mathf.Pow(1f - progress, 3f)); // Cubic ease out
+            goalText.transform.localRotation = Quaternion.Euler(0, 0, rotation);
+            
+            yield return null;
+        }
+        
+        goalText.transform.localScale = Vector3.one;
+        goalText.transform.localRotation = Quaternion.identity;
+
+        // Wait
+        yield return new WaitForSeconds(1.5f);
+
+        // Fade out
+        elapsed = 0f;
+        float fadeDuration = 0.5f;
+        Color originalColor = goalText.color;
+        
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
+            goalText.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            yield return null;
+        }
+
+        goalText.gameObject.SetActive(false);
+        goalText.color = originalColor; // Reset color for next time
     }
 
     System.Collections.IEnumerator ShowPowerUpCoroutine(TextMeshProUGUI textUI, string effectName, float duration)

@@ -17,7 +17,14 @@ public class ItemSpawner : MonoBehaviour
     [SerializeField] private Vector2 spawnAreaMax = new Vector2(8f, 4f);
 
     private List<GameObject> activeItems = new List<GameObject>();
+    private List<GameObject> availablePrefabs = new List<GameObject>();
     private float nextSpawnTime;
+
+    public void Setup(List<GameObject> items)
+    {
+        availablePrefabs = new List<GameObject>(items);
+        Debug.Log($"ItemSpawner setup with {availablePrefabs.Count} items.");
+    }
 
     void Start()
     {
@@ -77,13 +84,16 @@ public class ItemSpawner : MonoBehaviour
 
     GameObject GetRandomItemPrefab()
     {
-        List<GameObject> availablePrefabs = new List<GameObject>();
-
-        if (speedBoostPrefab != null) availablePrefabs.Add(speedBoostPrefab);
-        if (shieldPrefab != null) availablePrefabs.Add(shieldPrefab);
-        if (megaBallPrefab != null) availablePrefabs.Add(megaBallPrefab);
-        if (trapBombPrefab != null) availablePrefabs.Add(trapBombPrefab);
-        if (windCursePrefab != null) availablePrefabs.Add(windCursePrefab);
+        if (availablePrefabs == null || availablePrefabs.Count == 0)
+        {
+            // Fallback to inspector assigned references if Setup wasn't called or list is empty
+            availablePrefabs = new List<GameObject>();
+            if (speedBoostPrefab != null) availablePrefabs.Add(speedBoostPrefab);
+            if (shieldPrefab != null) availablePrefabs.Add(shieldPrefab);
+            if (megaBallPrefab != null) availablePrefabs.Add(megaBallPrefab);
+            if (trapBombPrefab != null) availablePrefabs.Add(trapBombPrefab);
+            if (windCursePrefab != null) availablePrefabs.Add(windCursePrefab);
+        }
 
         if (availablePrefabs.Count == 0) return null;
 
