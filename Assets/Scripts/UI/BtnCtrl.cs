@@ -4,27 +4,37 @@ using UnityEngine.UI;
 
 public class BtnCtrl : MonoBehaviour
 {
+    [Header("Buttons")]
+    [SerializeField] private Button startButton;
+    [SerializeField] private Button manualButton;
+    [SerializeField] private Button exitButton;
+    [SerializeField] private Button titleButton;
+
     void Start()
     {
-        // Auto-connect buttons by name
-        ConnectButton("StartButton", OnClickStartGame);
-        ConnectButton("ManualButton", OnClickManual);
-        ConnectButton("ExitButton", OnClickExit);
-        ConnectButton("TitleButton", OnClickTitle);
-    }
-
-    void ConnectButton(string buttonName, UnityEngine.Events.UnityAction action)
-    {
-        GameObject buttonObj = GameObject.Find(buttonName);
-        if (buttonObj != null)
+        // Connect buttons if assigned
+        if (startButton != null)
         {
-            Button button = buttonObj.GetComponent<Button>();
-            if (button != null)
-            {
-                button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(action);
-                Debug.Log($"[BtnCtrl] Connected {buttonName}");
-            }
+            startButton.onClick.AddListener(OnClickStartGame);
+            Debug.Log("[BtnCtrl] StartButton connected");
+        }
+        
+        if (manualButton != null)
+        {
+            manualButton.onClick.AddListener(OnClickManual);
+            Debug.Log("[BtnCtrl] ManualButton connected");
+        }
+        
+        if (exitButton != null)
+        {
+            exitButton.onClick.AddListener(OnClickExit);
+            Debug.Log("[BtnCtrl] ExitButton connected");
+        }
+        
+        if (titleButton != null)
+        {
+            titleButton.onClick.AddListener(OnClickTitle);
+            Debug.Log("[BtnCtrl] TitleButton connected");
         }
     }
 

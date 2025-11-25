@@ -277,6 +277,11 @@ public class GameManager : MonoBehaviour
             GameUI.Instance.ShowGoalText();
         }
 
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayGoalSound();
+        }
+
         StartCoroutine(GoalSequence());
     }
 
@@ -321,6 +326,12 @@ public class GameManager : MonoBehaviour
     void EndGame()
     {
         isGameActive = false;
+        
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayWhistleSound();
+        }
+        
         Debug.Log($"Game Over! Player1: {player1Score}, Player2: {player2Score}");
     }
     

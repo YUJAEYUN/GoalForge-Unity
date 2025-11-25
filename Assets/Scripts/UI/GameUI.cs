@@ -281,9 +281,24 @@ public class GameUI : MonoBehaviour
 
     public void ShowGoalText()
     {
+        if (goalText == null)
+        {
+            Debug.LogWarning("[GameUI] goalText is null, attempting to find it...");
+            GameObject goalObj = GameObject.Find("GoalText"); // Assuming the object is named "GoalText"
+            if (goalObj != null)
+            {
+                goalText = goalObj.GetComponent<TextMeshProUGUI>();
+            }
+        }
+
         if (goalText != null)
         {
+            Debug.Log("[GameUI] ShowGoalText called - Starting Coroutine");
             StartCoroutine(ShowGoalTextCoroutine());
+        }
+        else
+        {
+            Debug.LogError("[GameUI] goalText is still null! Cannot show goal text.");
         }
     }
 
@@ -292,26 +307,51 @@ public class GameUI : MonoBehaviour
         goalText.text = "GOAL!!!!!";
         goalText.gameObject.SetActive(true);
         goalText.transform.localScale = Vector3.zero;
+        
+        // Reset rotation
+        goalText.transform.localRotation = Quaternion.identity;
 
-        float duration = 0.5f;
+        float duration = 0.6f;
         float elapsed = 0f;
 
-        // Pop in
+        // Pop in with rotation
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float progress = elapsed / duration;
-            // Elastic ease out
+            
+            // Elastic ease out for scale
             float scale = Mathf.Sin(-13 * (progress + 1) * Mathf.PI / 2) * Mathf.Pow(2, -10 * progress) + 1;
             goalText.transform.localScale = Vector3.one * scale;
+            
+            // Spin effect
+            float rotation = Mathf.Lerp(360f, 0f, 1f - Mathf.Pow(1f - progress, 3f)); // Cubic ease out
+            goalText.transform.localRotation = Quaternion.Euler(0, 0, rotation);
+            
             yield return null;
         }
         
         goalText.transform.localScale = Vector3.one;
+        goalText.transform.localRotation = Quaternion.identity;
 
+        // Wait
         yield return new WaitForSeconds(1.5f);
 
+        // Fade out
+        elapsed = 0f;
+        float fadeDuration = 0.5f;
+        Color originalColor = goalText.color;
+        
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
+            goalText.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            yield return null;
+        }
+
         goalText.gameObject.SetActive(false);
+        goalText.color = originalColor; // Reset color for next time
     }
 
     System.Collections.IEnumerator ShowPowerUpCoroutine(TextMeshProUGUI textUI, string effectName, float duration)
