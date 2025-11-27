@@ -1435,7 +1435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f2b2e383ab1b4a9cad1fcbd6477e05b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matchDuration: 20
+  matchDuration: 60
   player1Prefab: {fileID: 1234567890123456789, guid: 1d5dd073bbd414cb4b22f068687ec200, type: 3}
   player2Prefab: {fileID: 2234567890123456789, guid: f563cc957556b44a889884c9df02cca0, type: 3}
   player1StartPos: {x: -8, y: 0}
