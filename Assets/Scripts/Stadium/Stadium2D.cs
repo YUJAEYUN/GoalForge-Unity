@@ -63,13 +63,13 @@ public class Stadium2D : MonoBehaviour
 
     void CreateWalls()
     {
-        CreateWall("WallLeft", new Vector2(-9f, 0f), new Vector2(1f, fieldHeight));
+        CreateWall("WallLeft", new Vector2(-11.5f, 0f), new Vector2(1f, fieldHeight));
 
-        CreateWall("WallRight", new Vector2(9f, 0f), new Vector2(1f, fieldHeight));
+        CreateWall("WallRight", new Vector2(12f, 0f), new Vector2(1f, fieldHeight));
 
-        CreateWall("WallTop", new Vector2(0f, 4.7f), new Vector2(fieldWidth, 1f));
+        CreateWall("WallTop", new Vector2(0f, 5.5f), new Vector2(fieldWidth, 1f));
 
-        CreateWall("WallBottom", new Vector2(0f, -6.5f), new Vector2(fieldWidth, 1f));
+        CreateWall("WallBottom", new Vector2(0f, -5.5f), new Vector2(fieldWidth, 1f));
     }
 
     void CreateWall(string name, Vector2 position, Vector2 size)
@@ -88,17 +88,18 @@ public class Stadium2D : MonoBehaviour
     
     void CreateGoals()
     {
-        CreateGoal("GoalRight", new Vector2(8f, 0f), 2, 90f);
+        CreateGoal("GoalRight", new Vector2(11f, 0f), 2, 90f, 0.4f);
 
-        CreateGoal("GoalLeft", new Vector2(-8f, 0f), 1, 90f);
+        CreateGoal("GoalLeft", new Vector2(-11f, 0f), 1, 90f, 0.4f);
     }
 
-    void CreateGoal(string name, Vector2 position, int goalOwner, float rotationZ = 0f)
+    void CreateGoal(string name, Vector2 position, int goalOwner, float rotationZ = 0f, float scaleX = 1f)
     {
         GameObject goal = new GameObject(name);
         goal.transform.parent = transform;
         goal.transform.localPosition = position;
         goal.transform.localRotation = Quaternion.Euler(0f, 0f, rotationZ);
+        goal.transform.localScale = new Vector3(scaleX, 1f, 1f);
 
         int goalLayer = LayerMask.NameToLayer("GoalPost");
         if (goalLayer != -1)
