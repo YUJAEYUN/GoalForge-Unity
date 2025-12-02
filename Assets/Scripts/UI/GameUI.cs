@@ -109,6 +109,7 @@ public class GameUI : MonoBehaviour
 
         float remainingTime = GameManager.Instance.GetRemainingTime();
 
+        // 타이머 UI 업데이트
         if (timerText != null)
         {
             int minutes = Mathf.FloorToInt(remainingTime / 60f);
@@ -116,9 +117,10 @@ public class GameUI : MonoBehaviour
             timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         }
 
-        if (suddenDeathText != null)
+        // ⭐ 시간이 0이 되면 자동으로 SUDDEN DEATH 모드 진입
+        if (remainingTime <= 0f)
         {
-            suddenDeathText.gameObject.SetActive(GameManager.Instance.IsSuddenDeath());
+            suddenDeathText.text = "SUDDEN DEATH";
         }
     }
 
@@ -136,7 +138,6 @@ public class GameUI : MonoBehaviour
             float maxGauge = superModeManager.GetMaxGauge();
             player1GaugeBar.fillAmount = maxGauge > 0f ? gauge1 / maxGauge : 0f;
             player1GaugeBar.color = gauge1 >= maxGauge ? gaugeFullColor : gaugeNormalColor;
-            Debug.Log("[GameUI] P1 gauge=" + gauge1 + ", fill=" + player1GaugeBar.fillAmount);
         }
         else
         {
@@ -149,7 +150,6 @@ public class GameUI : MonoBehaviour
             float maxGauge = superModeManager.GetMaxGauge();
             player2GaugeBar.fillAmount = maxGauge > 0f ? gauge2 / maxGauge : 0f;
             player2GaugeBar.color = gauge2 >= maxGauge ? gaugeFullColor : gaugeNormalColor;
-            Debug.Log("[GameUI] P2 gauge=" + gauge2 + ", fill=" + player2GaugeBar.fillAmount);
         }
         else
         {

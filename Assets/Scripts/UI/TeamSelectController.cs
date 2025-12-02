@@ -1,23 +1,25 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using TMPro;
 
 public class TeamSelectController : MonoBehaviour
 {
     [Header("Team Buttons")]
-    public Button[] teamButtons;
+    public Button[] teamButtons;      // 국가 선택 버튼들
 
-    [Header("Player Info UI")]
-    public TextMeshProUGUI playerTurnText;
+    [Header("Team Data")]
+    public string[] teamNames;        // UI에 보여줄 팀 이름 (선택 텍스트용)
+    public Sprite[] teamSprites;      // 각 팀의 선수 이미지 스프라이트
 
-    [Header("Confirm UI")]
-    public GameObject confirmPanel;
-    public TextMeshProUGUI selectedTeamText;
-    public Button confirmButton;
-    public Button cancelButton;
+    [Header("VS Images")]
+    public Image p1Image;             // VS 왼쪽 (1P)
+    public Image p2Image;             // VS 오른쪽 (2P - 좌우 반전)
 
-    private string currentSelectedTeam;
+    [Header("Confirm")]
+    public Button confirmButton;      // 항상 화면에 있는 Confirm 버튼
+
+    private bool isSelectingP1 = true;    // true면 1P 차례, false면 2P 차례
+    private int currentSelectedIndex = -1;   // 이번 차례에 고른 팀 인덱스
 
     private void Start()
     {
@@ -26,10 +28,14 @@ public class TeamSelectController : MonoBehaviour
             PlayerManager.Instance.ResetGame();
         }
 
-        if (confirmPanel != null)
-            confirmPanel.SetActive(false);
+        if (p1Image != null) p1Image.gameObject.SetActive(false);
+        if (p2Image != null) p2Image.gameObject.SetActive(false);
 
-        UpdatePlayerTurnText();
+        if (p2Image != null)
+        {
+            Vector3 s = p2Image.rectTransform.localScale;
+            p2Image.rectTransform.localScale = new Vector3(-Mathf.Abs(s.x), s.y, s.z);
+        }
 
         for (int i = 0; i < teamButtons.Length; i++)
         {
@@ -41,154 +47,73 @@ public class TeamSelectController : MonoBehaviour
         }
 
         if (confirmButton != null)
-            confirmButton.onClick.AddListener(OnConfirmSelection);
-
-        if (cancelButton != null)
-            cancelButton.onClick.AddListener(OnCancelSelection);
-    }
-
-    [ContextMenu("Auto Arrange Buttons")]
-    private void ArrangeButtons()
-    {
-        // 3x3 Grid Layout for Team Buttons
-        float startX = -250f;
-        float startY = 150f;
-        float gapX = 250f;
-        float gapY = 150f;
-
-        for (int i = 0; i < teamButtons.Length; i++)
         {
-            if (teamButtons[i] == null) continue;
-
-            RectTransform rt = teamButtons[i].GetComponent<RectTransform>();
-            if (rt != null)
-            {
-                int row = i / 3;
-                int col = i % 3;
-
-                float x = startX + (col * gapX);
-                float y = startY - (row * gapY);
-
-                rt.anchoredPosition = new Vector2(x, y);
-            }
-        }
-
-        // Center the Confirm Panel
-        if (confirmPanel != null)
-        {
-            RectTransform rt = confirmPanel.GetComponent<RectTransform>();
-            if (rt != null)
-            {
-                rt.anchoredPosition = Vector2.zero;
-                // Ensure it has a size
-                if (rt.sizeDelta.x < 100) rt.sizeDelta = new Vector2(600, 400);
-            }
-            
-            // Ensure buttons are visible within the panel
-            if (confirmButton != null)
-            {
-                RectTransform btnRt = confirmButton.GetComponent<RectTransform>();
-                if (btnRt != null)
-                {
-                    // Position Confirm button to the right bottom
-                    btnRt.anchoredPosition = new Vector2(150, -120);
-                }
-            }
-
-            if (cancelButton != null)
-            {
-                RectTransform btnRt = cancelButton.GetComponent<RectTransform>();
-                if (btnRt != null)
-                {
-                    // Position Cancel button to the left bottom
-                    btnRt.anchoredPosition = new Vector2(-150, -120);
-                }
-            }
-            
-            if (selectedTeamText != null)
-            {
-                 RectTransform textRt = selectedTeamText.GetComponent<RectTransform>();
-                 if (textRt != null)
-                 {
-                     textRt.anchoredPosition = new Vector2(0, 50);
-                 }
-            }
+            confirmButton.onClick.AddListener(OnConfirm);
         }
     }
 
-    private void UpdatePlayerTurnText()
+    private void OnTeamButtonClicked(int index)
     {
-        if (playerTurnText != null && PlayerManager.Instance != null)
+        if (index < 0 || index >= teamSprites.Length)
         {
-            if (PlayerManager.Instance.currentSelectingPlayer == PlayerManager.SelectingPlayer.Player1)
-            {
-                playerTurnText.text = "Player 1: Select Your Team";
-            }
-            else
-            {
-                playerTurnText.text = "Player 2: Select Your Team";
-            }
+            Debug.LogWarning("[TeamSelect] 잘못된 팀 인덱스: " + index);
+            return;
         }
-    }
 
-    private void OnTeamButtonClicked(int teamIndex)
-    {
-        // Get team name from text or object name
-        if (teamButtons[teamIndex] == null) return;
+        currentSelectedIndex = index;   // 🔥 인덱스 저장
 
-        TextMeshProUGUI teamText = teamButtons[teamIndex].GetComponentInChildren<TextMeshProUGUI>();
-        if (teamText != null)
+        Sprite sprite = teamSprites[index];
+
+        if (isSelectingP1)
         {
-            currentSelectedTeam = teamText.text;
+            if (p1Image == null) return;
+
+            p1Image.sprite = sprite;
+            p1Image.color = Color.white;
+            p1Image.gameObject.SetActive(true);
         }
         else
         {
-            currentSelectedTeam = teamButtons[teamIndex].name;
-        }
+            if (p2Image == null) return;
 
-        ShowConfirmPanel();
+            p2Image.sprite = sprite;
+            p2Image.color = Color.white;
+            p2Image.gameObject.SetActive(true);
+        }
     }
 
-    private void ShowConfirmPanel()
+    private void OnConfirm()
     {
-        if (confirmPanel != null)
+        if (currentSelectedIndex < 0)
         {
-            confirmPanel.SetActive(true);
-
-            string playerNum = PlayerManager.Instance.currentSelectingPlayer == PlayerManager.SelectingPlayer.Player1
-                ? "Player 1" : "Player 2";
-
-            if (selectedTeamText != null)
-            {
-                selectedTeamText.text = $"{playerNum} Select Team \n{currentSelectedTeam}";
-            }
+            Debug.Log("[TeamSelect] 선택된 팀이 없습니다. 먼저 팀을 선택하세요.");
+            return;
         }
-    }
 
-    private void OnConfirmSelection()
-    {
         if (PlayerManager.Instance != null)
         {
-            PlayerManager.Instance.SelectTeam(currentSelectedTeam);
+            string teamName = "";
+            if (teamNames != null &&
+                currentSelectedIndex >= 0 &&
+                currentSelectedIndex < teamNames.Length)
+            {
+                teamName = teamNames[currentSelectedIndex];
+            }
 
-            if (PlayerManager.Instance.currentSelectingPlayer == PlayerManager.SelectingPlayer.Player2
-                && !string.IsNullOrEmpty(PlayerManager.Instance.player2Team))
-            {
-                // Both players selected, go to CoinScene
-                SceneManager.LoadScene("CoinScene");
-            }
-            else
-            {
-                // Player 1 selected, now Player 2's turn
-                confirmPanel.SetActive(false);
-                UpdatePlayerTurnText();
-            }
+            PlayerManager.Instance.SelectTeamIndex(currentSelectedIndex, teamName);
+            Debug.Log($"[TeamSelect] {(isSelectingP1 ? "P1" : "P2")} 팀 확정: {teamName} (index {currentSelectedIndex})");
         }
-    }
 
-    private void OnCancelSelection()
-    {
-        if (confirmPanel != null)
-            confirmPanel.SetActive(false);
+        if (isSelectingP1)
+        {
+            isSelectingP1 = false;
+            currentSelectedIndex = -1;
+            Debug.Log("[TeamSelect] Player1 선택 확정. 이제 Player2 차례.");
+        }
+        else
+        {
+            Debug.Log("[TeamSelect] Player2 선택 확정. CoinScene 으로 이동.");
+            SceneManager.LoadScene("CoinScene");
+        }
     }
 }

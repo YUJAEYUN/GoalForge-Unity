@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,9 +11,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashForce = 12f;
     [SerializeField] private float dashCooldown = 0.5f;
 
+    [Header("Visual / Animation")]
+    [SerializeField] private Transform visualRoot;
+
     private Rigidbody2D rb;
     private float lastDashTime;
     private float horizontalInput;
+
+    private Animator anim;
 
     [HideInInspector] public bool isSuperMode = false;
     [HideInInspector] public float superModeSpeedMultiplier = 1f;
@@ -25,9 +30,15 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isStunned = false;
     [HideInInspector] public bool hasReversedControls = false;
 
+    // 메시: 공 안 떨어지는 슈퍼 드리블
+    [HideInInspector] public bool keepBallInSuperMode = false;
+
+    // 홀란드: 슈퍼 동안 모든 슛이 강력해짐
+    [HideInInspector] public bool enableHaalandPowerShot = false;
+    [HideInInspector] public float haalandShotPowerMultiplier = 2.5f;
+
     public int GetPlayerNumber() => playerNumber;
     public void SetPlayerNumber(int number) => playerNumber = number;
-
 
     void Awake()
     {
@@ -38,11 +49,18 @@ public class PlayerController : MonoBehaviour
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         rb.linearDamping = 2f;
 
+        if (visualRoot == null)
+            visualRoot = transform.Find("Visual");
+
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr == null && visualRoot != null)
+            sr = visualRoot.GetComponent<SpriteRenderer>();
+
         if (sr != null)
-        {
             sr.sortingOrder = 1;
-        }
+
+        if (visualRoot != null)
+            anim = visualRoot.GetComponent<Animator>();
     }
 
     void Update()
@@ -107,8 +125,28 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKey(KeyCode.UpArrow)) moveY = 1f * inputMultiplier;
             if (Input.GetKey(KeyCode.DownArrow)) moveY = -1f * inputMultiplier;
         }
+
         moveY *= currentSpeed;
+
         rb.linearVelocity = new Vector2(moveX, moveY);
+
+        if (visualRoot != null)
+        {
+            if (moveX > 0.01f)
+            {
+                visualRoot.localScale = new Vector3(1f, 1f, 1f);
+            }
+            else if (moveX < -0.01f)
+            {
+                visualRoot.localScale = new Vector3(-1f, 1f, 1f);
+            }
+        }
+
+        if (anim != null)
+        {
+            bool isMoving = Mathf.Abs(moveX) > 0.01f || Mathf.Abs(moveY) > 0.01f;
+            anim.SetFloat("Speed", isMoving ? 1f : 0f);
+        }
     }
 
     void Jump()
@@ -117,7 +155,9 @@ public class PlayerController : MonoBehaviour
 
     void Dash()
     {
-        float dashDirection = horizontalInput != 0 ? horizontalInput : (transform.localScale.x > 0 ? 1 : -1);
+        float dashDirection = horizontalInput != 0 ? horizontalInput :
+            (visualRoot != null && visualRoot.localScale.x > 0 ? 1 : -1);
+
         rb.AddForce(Vector2.right * dashDirection * dashForce, ForceMode2D.Impulse);
         lastDashTime = Time.time;
 
@@ -129,6 +169,7 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        // ───────── 공과 충돌 (슛 / 드리블 / 필살슛 처리) ─────────
         if (collision.gameObject.CompareTag("Ball"))
         {
             Ball ball = collision.gameObject.GetComponent<Ball>();
@@ -136,24 +177,43 @@ public class PlayerController : MonoBehaviour
             {
                 Vector2 kickDirection = (collision.transform.position - transform.position).normalized;
                 float kickPower = 3.5f * (isSuperMode ? 1.2f : 1f) * megaBallMultiplier;
+
+                SuperModeManager superModeManager = FindObjectOfType<SuperModeManager>();
+
+                // 메시 슈퍼 드리블
+                if (keepBallInSuperMode)
+                {
+                    ball.AttachTo(this);
+
+                    if (SoundManager.Instance != null)
+                        SoundManager.Instance.PlayKickSound();
+
+                    if (superModeManager != null)
+                        superModeManager.OnBallTouch(this);
+
+                    return;
+                }
+
+                // ⭐ 홀란드 파워슛: 단 한 번만 강한 슛 가능 (예전 버전)
+                if (enableHaalandPowerShot)
+                {
+                    kickPower *= haalandShotPowerMultiplier;
+                    ball.TriggerPowerShotEffect();  // 빨간 이펙트
+
+                    if (SoundManager.Instance != null)
+                        SoundManager.Instance.PlayHaalandPowerShotKickSound();
+
+                    enableHaalandPowerShot = false;  // ⬅ 한 번 쓰면 바로 꺼짐
+                }
+
                 ball.Kick(kickDirection * kickPower);
 
                 if (SoundManager.Instance != null)
-                {
                     SoundManager.Instance.PlayKickSound();
-                }
-                SuperModeManager superModeManager = Object.FindAnyObjectByType<SuperModeManager>();
+
                 if (superModeManager != null)
-                {
-                    Debug.Log("[PlayerController] Notifying SuperModeManager.OnBallTouch for " + name);
                     superModeManager.OnBallTouch(this);
-                }
-                else
-                {
-                    Debug.LogWarning("[PlayerController] SuperModeManager not found in scene");
-                }
             }
         }
     }
 }
-

@@ -1,0 +1,201 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\User\\gihub\\GoalForge-Unity\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|c:\\users\\user\\gihub\\goalforge-unity\\assets\\scripts\\game\\resultscenemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\game\\resultscenemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|C:\\Users\\User\\gihub\\GoalForge-Unity\\assets\\scripts\\game\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\game\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|C:\\Users\\User\\gihub\\GoalForge-Unity\\assets\\scripts\\ui\\cointosscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ui\\cointosscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|c:\\users\\user\\gihub\\goalforge-unity\\assets\\scripts\\ui\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ui\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|C:\\Users\\User\\gihub\\GoalForge-Unity\\assets\\scripts\\ui\\teamselectcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ui\\teamselectcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|C:\\Users\\User\\gihub\\GoalForge-Unity\\assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|C:\\Users\\User\\gihub\\GoalForge-Unity\\assets\\scripts\\player\\charactertype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\charactertype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|C:\\Users\\User\\gihub\\GoalForge-Unity\\assets\\scripts\\player\\playervisualeffects.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\playervisualeffects.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|C:\\Users\\User\\gihub\\GoalForge-Unity\\assets\\scripts\\cursor\\cursorhoverui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\cursor\\cursorhoverui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|C:\\Users\\User\\gihub\\GoalForge-Unity\\assets\\scripts\\cursor\\soccercursor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CAF9048D-B012-3677-360D-21379BC0DB0D}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\cursor\\soccercursor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|c:\\users\\user\\gihub\\goalforge-unity\\assets\\scripts\\ui\\playercreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\scripts\\ui\\playercreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ResultSceneManager.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Game\\ResultSceneManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Game\\ResultSceneManager.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Game\\ResultSceneManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Game\\ResultSceneManager.cs",
+              "ViewState": "AgIAAIcAAAAAAAAAAAAYwJ8AAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T17:12:38.23Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CoinTossController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\UI\\CoinTossController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\CoinTossController.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\UI\\CoinTossController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\UI\\CoinTossController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T03:44:44.308Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PlayerManager.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\UI\\PlayerManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\PlayerManager.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\UI\\PlayerManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\UI\\PlayerManager.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAAowEAAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T03:17:17.325Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GameManager.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Game\\GameManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Game\\GameManager.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Game\\GameManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Game\\GameManager.cs",
+              "ViewState": "AgIAAJMBAAAAAAAAAAAowJ0BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T03:10:52.001Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TeamSelectController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\UI\\TeamSelectController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\TeamSelectController.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\UI\\TeamSelectController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\UI\\TeamSelectController.cs",
+              "ViewState": "AgIAAFQAAAAAAAAAAAA1wGYAAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-30T21:44:05.038Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PlayerController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Player\\PlayerController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Player\\PlayerController.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Player\\PlayerController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Player\\PlayerController.cs",
+              "ViewState": "AgIAAKQAAAAAAAAAAAAowK0AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-30T19:35:31.877Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "PlayerCreate.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\UI\\PlayerCreate.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\PlayerCreate.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\UI\\PlayerCreate.cs",
+              "RelativeToolTip": "Assets\\Scripts\\UI\\PlayerCreate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-30T21:39:17.954Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CharacterType.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Player\\CharacterType.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Player\\CharacterType.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Player\\CharacterType.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Player\\CharacterType.cs",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAgwGkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-30T19:56:33.229Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "PlayerVisualEffects.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Player\\PlayerVisualEffects.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Player\\PlayerVisualEffects.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Player\\PlayerVisualEffects.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Player\\PlayerVisualEffects.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-30T19:44:27.289Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CursorHoverUI.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Cursor\\CursorHoverUI.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Cursor\\CursorHoverUI.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Cursor\\CursorHoverUI.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Cursor\\CursorHoverUI.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAowCEAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-30T11:36:55.802Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "SoccerCursor.cs",
+              "DocumentMoniker": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Cursor\\SoccerCursor.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Cursor\\SoccerCursor.cs",
+              "ToolTip": "C:\\Users\\User\\gihub\\GoalForge-Unity\\Assets\\Scripts\\Cursor\\SoccerCursor.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Cursor\\SoccerCursor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-30T11:14:05.094Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

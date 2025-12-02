@@ -63,9 +63,9 @@ public class Stadium2D : MonoBehaviour
 
     void CreateWalls()
     {
-        CreateWall("WallLeft", new Vector2(-11.5f, 0f), new Vector2(1f, fieldHeight));
+        CreateWall("WallLeft", new Vector2(-14.5f, 0f), new Vector2(1f, fieldHeight));
 
-        CreateWall("WallRight", new Vector2(12f, 0f), new Vector2(1f, fieldHeight));
+        CreateWall("WallRight", new Vector2(15f, 0f), new Vector2(1f, fieldHeight));
 
         CreateWall("WallTop", new Vector2(0f, 5.5f), new Vector2(fieldWidth, 1f));
 
@@ -88,9 +88,9 @@ public class Stadium2D : MonoBehaviour
     
     void CreateGoals()
     {
-        CreateGoal("GoalRight", new Vector2(11f, 0f), 2, 90f, 0.4f);
+        CreateGoal("GoalRight", new Vector2(14f, 0f), 2, 90f, 0.4f);
 
-        CreateGoal("GoalLeft", new Vector2(-11f, 0f), 1, 90f, 0.4f);
+        CreateGoal("GoalLeft", new Vector2(-14f, 0f), 1, 90f, 0.4f);
     }
 
     void CreateGoal(string name, Vector2 position, int goalOwner, float rotationZ = 0f, float scaleX = 1f)

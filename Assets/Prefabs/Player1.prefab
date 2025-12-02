@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1234567890123456795}
   m_Layer: 7
   m_Name: Player1
-  m_TagString: Player1
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -182,14 +182,14 @@ MonoBehaviour:
   jumpForce: 15
   dashForce: 20
   dashCooldown: 0.5
-  groundCheck: {fileID: 1234567890123456796}
-  groundCheckRadius: 0.2
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 0
   isSuperMode: 0
   superModeSpeedMultiplier: 1
   superModeJumpMultiplier: 1
+  hasShield: 0
+  hasMegaBall: 0
+  megaBallMultiplier: 1
+  isStunned: 0
+  hasReversedControls: 0
 --- !u!114 &1234567890123456795
 MonoBehaviour:
   m_ObjectHideFlags: 0

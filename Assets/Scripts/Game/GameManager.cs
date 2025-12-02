@@ -1,69 +1,69 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;   // ★ 국기 UI Image 때문에 추가
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    
+
     [Header("Game Settings")]
-    [SerializeField] private float matchDuration = 60f; // 60초
-    
-    [Header("Players")]
-    [SerializeField] private GameObject player1Prefab;
-    [SerializeField] private GameObject player2Prefab;
-    [SerializeField] private Vector2 player1StartPos = new Vector2(-3f, 3f);  // 왼쪽 위
-    [SerializeField] private Vector2 player2StartPos = new Vector2(3f, -3f);  // 오른쪽 아래
+    [SerializeField] private float matchDuration = 60f;
+
+    [Header("Player Spawn")]
+    [SerializeField] private Vector2 player1StartPos = new Vector2(-3f, 3f);
+    [SerializeField] private Vector2 player2StartPos = new Vector2(3f, -3f);
+
+    [Header("Team Prefabs (TeamSelect 순서와 동일)")]
+    [SerializeField] private GameObject[] teamPrefabs;
 
     [Header("Ball")]
     [SerializeField] private GameObject ballPrefab;
-    [SerializeField] private Vector2 ballStartPos = new Vector2(0f, 0f);  // 중앙
-    
+    [SerializeField] private Vector2 ballStartPos = new Vector2(0f, 0f);
+
+    [Header("Scoreboard UI (Flag Images)")]
+    [SerializeField] private Image leftFlagImage;   // 스코어보드 왼쪽 국기 UI
+    [SerializeField] private Image rightFlagImage;  // 스코어보드 오른쪽 국기 UI
+    [SerializeField] private Sprite[] teamFlagSprites; // 팀별 국기 스프라이트 (teamPrefabs 순서와 동일)
+
     private int player1Score = 0;
     private int player2Score = 0;
     private float remainingTime;
     private bool isGameActive = false;
     private bool isPaused = false;
     private bool isSuddenDeath = false;
-    
+
     private GameObject player1Instance;
     private GameObject player2Instance;
     private GameObject ballInstance;
-    
+
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
     }
-    
+
     void Start()
     {
         InitializeGame();
     }
-    
+
     void Update()
     {
         if (!isGameActive || isPaused) return;
-        
+
         remainingTime -= Time.deltaTime;
-        
-        if (remainingTime <= 0 && !isSuddenDeath)
+
+        if (remainingTime <= 0f && !isSuddenDeath)
         {
             EndRegularTime();
         }
-        
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
         }
     }
-    
+
     void InitializeGame()
     {
         remainingTime = matchDuration;
@@ -71,70 +71,121 @@ public class GameManager : MonoBehaviour
         player2Score = 0;
         isGameActive = true;
         isSuddenDeath = false;
-        
+
         SpawnPlayers();
         SpawnBall();
+
+        // 플레이어 생성 직후, 양쪽 모두 중앙을 바라보게 설정
+        SetAllPlayersFacingCenter();
+
+        // ★ 선택한 팀의 국기를 스코어보드에 표시
+        SetupScoreboardFlags();
+
         SetupCamera();
         SetupBackground();
         SetupItemSpawner();
     }
 
-    void SetupItemSpawner()
+    void SpawnPlayers()
     {
-        ItemSpawner spawner = FindObjectOfType<ItemSpawner>();
-        if (spawner == null)
+        if (PlayerManager.Instance == null)
         {
-            GameObject spawnerObj = new GameObject("ItemSpawner");
-            spawner = spawnerObj.AddComponent<ItemSpawner>();
-        }
-
-        // Load item prefabs from Resources
-        GameObject[] loadedItems = Resources.LoadAll<GameObject>("Items");
-        if (loadedItems != null && loadedItems.Length > 0)
-        {
-            System.Collections.Generic.List<GameObject> itemList = new System.Collections.Generic.List<GameObject>(loadedItems);
-            spawner.Setup(itemList);
-        }
-        else
-        {
-            Debug.LogWarning("No item prefabs found in Resources/Items");
-        }
-    }
-
-    void SetupBackground()
-    {
-        Sprite grassSprite = Resources.Load<Sprite>("Sprites/GrassBackground");
-        if (grassSprite == null)
-        {
-            Debug.LogWarning("GrassBackground sprite not found in Resources/Sprites/");
+            Debug.LogError("[GameManager] PlayerManager.Instance 가 없습니다. TeamSelectScene을 통해 들어와야 합니다.");
             return;
         }
 
-        GameObject backgroundGroup = new GameObject("BackgroundGroup");
-        
-        // Create a 20x20 grid of grass tiles
-        // Assuming the sprite is 512x512 pixels and PPU is 100, each tile is 5.12x5.12 units
-        float tileSize = grassSprite.bounds.size.x;
-        int gridSize = 20;
-        float startOffset = -(gridSize * tileSize) / 2f;
+        int p1Index = PlayerManager.Instance.player1TeamIndex;
+        int p2Index = PlayerManager.Instance.player2TeamIndex;
 
-        for (int x = 0; x < gridSize; x++)
+        Debug.Log($"[GameManager] >>> SpawnPlayers. P1 index={p1Index}, P2 index={p2Index}");
+
+        if (teamPrefabs == null || teamPrefabs.Length == 0)
         {
-            for (int y = 0; y < gridSize; y++)
-            {
-                GameObject tile = new GameObject($"GrassTile_{x}_{y}");
-                tile.transform.SetParent(backgroundGroup.transform);
-                
-                SpriteRenderer sr = tile.AddComponent<SpriteRenderer>();
-                sr.sprite = grassSprite;
-                sr.sortingOrder = -100; // Render behind everything
-                
-                float posX = startOffset + (x * tileSize);
-                float posY = startOffset + (y * tileSize);
-                
-                tile.transform.position = new Vector3(posX, posY, 10f); // Z=10 to be behind
-            }
+            Debug.LogError("[GameManager] teamPrefabs 배열이 비어있습니다.");
+            return;
         }
+
+        // Player1
+        if (IsValidTeamIndex(p1Index))
+        {
+            Vector3 pos1 = new Vector3(player1StartPos.x, player1StartPos.y, 0f);
+            player1Instance = Instantiate(teamPrefabs[p1Index], pos1, Quaternion.identity);
+
+            PlayerController pc1 = player1Instance.GetComponent<PlayerController>();
+            if (pc1 != null) pc1.SetPlayerNumber(1);
+
+            AddSpriteToPlayer(player1Instance, Color.blue, "Player1");
+            Debug.Log($"[GameManager] Player1 spawned with {teamPrefabs[p1Index].name} at {pos1}");
+        }
+        else
+        {
+            Debug.LogError("[GameManager] Player1 팀 인덱스가 잘못되었거나 프리팹이 비어있습니다.");
+        }
+
+        // Player2
+        if (IsValidTeamIndex(p2Index))
+        {
+            Vector3 pos2 = new Vector3(player2StartPos.x, player2StartPos.y, 0f);
+            player2Instance = Instantiate(teamPrefabs[p2Index], pos2, Quaternion.identity);
+
+            PlayerController pc2 = player2Instance.GetComponent<PlayerController>();
+            if (pc2 != null) pc2.SetPlayerNumber(2);
+
+            AddSpriteToPlayer(player2Instance, Color.red, "Player2");
+            Debug.Log($"[GameManager] Player2 spawned with {teamPrefabs[p2Index].name} at {pos2}");
+        }
+        else
+        {
+            Debug.LogError("[GameManager] Player2 팀 인덱스가 잘못되었거나 프리팹이 비어있습니다.");
+        }
+    }
+
+    bool IsValidTeamIndex(int index)
+    {
+        return (index >= 0 && index < teamPrefabs.Length && teamPrefabs[index] != null);
+    }
+
+    void AddSpriteToPlayer(GameObject player, Color color, string playerName)
+    {
+        SpriteRenderer sr = player.GetComponent<SpriteRenderer>();
+        if (sr == null) sr = player.AddComponent<SpriteRenderer>();
+
+        if (sr.sprite == null)
+        {
+            sr.sprite = SpriteGenerator.CreatePlayerSprite(64, color);
+            sr.sortingOrder = 1;
+            Debug.Log($"[GameManager] {playerName} sprite generated.");
+        }
+    }
+
+    void SpawnBall()
+    {
+        if (ballPrefab == null)
+        {
+            Debug.LogError("[GameManager] ballPrefab 이 할당되지 않았습니다.");
+            return;
+        }
+
+        Vector3 ballPos = new Vector3(ballStartPos.x, ballStartPos.y, 0f);
+
+        if (PlayerManager.Instance != null)
+        {
+            ballPos.x = PlayerManager.Instance.player1IsLeftSide ? -6f : 6f;
+            Debug.Log($"[GameManager] Coin Toss applied. ballPos.x = {ballPos.x}");
+        }
+
+        ballInstance = Instantiate(ballPrefab, ballPos, Quaternion.identity);
+
+        SpriteRenderer sr = ballInstance.GetComponent<SpriteRenderer>();
+        if (sr == null) sr = ballInstance.AddComponent<SpriteRenderer>();
+        if (sr.sprite == null)
+        {
+            sr.sprite = SpriteGenerator.CreateSoccerBallSprite(32);
+            sr.sortingOrder = 2;
+            Debug.Log("[GameManager] Ball sprite generated.");
+        }
+
+        Debug.Log($"[GameManager] Ball spawned at {ballPos}");
     }
 
     void SetupCamera()
@@ -144,151 +195,150 @@ public class GameManager : MonoBehaviour
         {
             CameraFollow follow = cam.GetComponent<CameraFollow>();
             if (follow == null)
-            {
                 follow = cam.gameObject.AddComponent<CameraFollow>();
-            }
-            
+
             if (ballInstance != null)
-            {
                 follow.target = ballInstance.transform;
+        }
+    }
+
+    void SetupBackground()
+    {
+        Sprite grassSprite = Resources.Load<Sprite>("Sprites/GrassBackground");
+        if (grassSprite == null)
+        {
+            Debug.LogWarning("[GameManager] GrassBackground sprite not found in Resources/Sprites/");
+            return;
+        }
+
+        GameObject group = new GameObject("BackgroundGroup");
+
+        float tileSize = grassSprite.bounds.size.x;
+        int gridSize = 20;
+        float offset = -(gridSize * tileSize) / 2f;
+
+        for (int x = 0; x < gridSize; x++)
+        {
+            for (int y = 0; y < gridSize; y++)
+            {
+                GameObject tile = new GameObject($"Tile_{x}_{y}");
+                tile.transform.SetParent(group.transform);
+
+                SpriteRenderer sr = tile.AddComponent<SpriteRenderer>();
+                sr.sprite = grassSprite;
+                sr.sortingOrder = -100;
+
+                tile.transform.position = new Vector3(offset + x * tileSize, offset + y * tileSize, 10f);
             }
         }
     }
-    
-    void SpawnPlayers()
-    {
-        if (player1Prefab != null)
-        {
-            Vector3 pos1 = new Vector3(player1StartPos.x, player1StartPos.y, 0f);
-            player1Instance = Instantiate(player1Prefab, pos1, Quaternion.identity);
-            PlayerController pc1 = player1Instance.GetComponent<PlayerController>();
-            if (pc1 != null)
-            {
-                pc1.SetPlayerNumber(1);
-            }
 
-            AddSpriteToPlayer(player1Instance, Color.red, "Player1");
-            Debug.Log($"Player1 spawned at {pos1}");
+    void SetupItemSpawner()
+    {
+        ItemSpawner spawner = FindObjectOfType<ItemSpawner>();
+        if (spawner == null)
+        {
+            GameObject obj = new GameObject("ItemSpawner");
+            spawner = obj.AddComponent<ItemSpawner>();
+        }
+
+        GameObject[] loadedItems = Resources.LoadAll<GameObject>("Items");
+        if (loadedItems != null && loadedItems.Length > 0)
+        {
+            spawner.Setup(new System.Collections.Generic.List<GameObject>(loadedItems));
         }
         else
         {
-            Debug.LogError("Player1 Prefab is not assigned!");
-        }
-
-        if (player2Prefab != null)
-        {
-            Vector3 pos2 = new Vector3(player2StartPos.x, player2StartPos.y, 0f);
-            player2Instance = Instantiate(player2Prefab, pos2, Quaternion.identity);
-            PlayerController pc2 = player2Instance.GetComponent<PlayerController>();
-            if (pc2 != null)
-            {
-                pc2.SetPlayerNumber(2);
-            }
-
-            AddSpriteToPlayer(player2Instance, Color.blue, "Player2");
-            Debug.Log($"Player2 spawned at {pos2}");
-        }
-        else
-        {
-            Debug.LogError("Player2 Prefab is not assigned!");
+            Debug.LogWarning("[GameManager] No item prefabs found in Resources/Items");
         }
     }
 
-    void SpawnBall()
+    // ==========================
+    //  스코어보드 국기 설정
+    // ==========================
+    void SetupScoreboardFlags()
     {
-        if (ballPrefab != null)
+        if (PlayerManager.Instance == null) return;
+
+        int p1Index = PlayerManager.Instance.player1TeamIndex;
+        int p2Index = PlayerManager.Instance.player2TeamIndex;
+
+        // teamFlagSprites 배열도 teamPrefabs와 같은 순서로 넣어두었다고 가정
+        if (IsValidFlagIndex(p1Index) && leftFlagImage != null)
         {
-            Vector3 ballPos = new Vector3(ballStartPos.x, ballStartPos.y, 0f);
-
-            // Apply Coin Toss Result for the first spawn
-            if (PlayerManager.Instance != null)
-            {
-                // If player1IsLeftSide is true (Heads), spawn near Left (Player 1)
-                // If false (Tails), spawn near Right (Player 2)
-                if (PlayerManager.Instance.player1IsLeftSide)
-                {
-                    ballPos.x = -6.0f; 
-                }
-                else
-                {
-                    ballPos.x = 6.0f;
-                }
-                Debug.Log($"[GameManager] Coin Toss Result Applied. Ball Spawn X: {ballPos.x}");
-            }
-
-            ballInstance = Instantiate(ballPrefab, ballPos, Quaternion.identity);
-
-            AddSpriteToBall(ballInstance);
-            Debug.Log($"Ball spawned at {ballPos}");
+            leftFlagImage.sprite = teamFlagSprites[p1Index];
         }
-        else
+
+        if (IsValidFlagIndex(p2Index) && rightFlagImage != null)
         {
-            Debug.LogError("Ball Prefab is not assigned!");
+            rightFlagImage.sprite = teamFlagSprites[p2Index];
         }
     }
 
-    void AddSpriteToPlayer(GameObject player, Color color, string playerName)
+    bool IsValidFlagIndex(int index)
     {
-        SpriteRenderer sr = player.GetComponent<SpriteRenderer>();
-        if (sr == null)
-        {
-            sr = player.AddComponent<SpriteRenderer>();
-        }
-
-        if (sr.sprite == null)
-        {
-            sr.sprite = SpriteGenerator.CreatePlayerSprite(64, color);
-            sr.sortingOrder = 1;
-            Debug.Log($"{playerName} sprite generated!");
-        }
+        return (index >= 0 && index < teamFlagSprites.Length && teamFlagSprites[index] != null);
     }
 
-    void AddSpriteToBall(GameObject ball)
+    // ==========================
+    //  가운데 바라보는 기능
+    // ==========================
+
+    void SetAllPlayersFacingCenter()
     {
-        SpriteRenderer sr = ball.GetComponent<SpriteRenderer>();
-        if (sr == null)
+        SetPlayerFacingCenter(player1Instance);
+        SetPlayerFacingCenter(player2Instance);
+    }
+
+    void SetPlayerFacingCenter(GameObject player)
+    {
+        if (player == null) return;
+
+        Transform visual = player.transform.Find("Visual");
+        if (visual == null)
         {
-            sr = ball.AddComponent<SpriteRenderer>();
+            visual = player.transform;
         }
 
-        if (sr.sprite == null)
+        Vector3 scale = visual.localScale;
+
+        if (player.transform.position.x < 0f)
         {
-            sr.sprite = SpriteGenerator.CreateSoccerBallSprite(32);
-            sr.sortingOrder = 2;
-            Debug.Log("Ball sprite generated!");
+            scale.x = Mathf.Abs(scale.x);
         }
+        else if (player.transform.position.x > 0f)
+        {
+            scale.x = -Mathf.Abs(scale.x);
+        }
+
+        visual.localScale = scale;
     }
-    
+
+    // ==========================
+
     public void OnGoalScored(int scoringPlayer)
     {
         if (!isGameActive) return;
 
-        // Trigger Camera Shake
+        if (scoringPlayer == 1) player1Score++;
+        else if (scoringPlayer == 2) player2Score++;
+
         Camera cam = Camera.main;
         if (cam != null)
         {
             CameraFollow follow = cam.GetComponent<CameraFollow>();
             if (follow != null)
             {
-                follow.TriggerShake(0.5f, 0.3f); // Shake for 0.5s with 0.3 magnitude
+                follow.TriggerShake(0.5f, 0.3f);
             }
         }
-        
-        if (scoringPlayer == 1)
-        {
-            player1Score++;
-        }
-        else if (scoringPlayer == 2)
-        {
-            player2Score++;
-        }
-        
+
         if (isSuddenDeath)
         {
             EndGame();
             return;
         }
-        
+
         if (GameUI.Instance != null)
         {
             GameUI.Instance.ShowGoalText();
@@ -304,21 +354,24 @@ public class GameManager : MonoBehaviour
 
     System.Collections.IEnumerator GoalSequence()
     {
-        // Hit Stop Effect
         Time.timeScale = 0.05f;
-        yield return new WaitForSecondsRealtime(0.5f); // Realtime 0.5s (perceived as short freeze)
+        yield return new WaitForSecondsRealtime(0.5f);
         Time.timeScale = 1f;
 
         ResetPositions();
     }
-    
+
     void ResetPositions()
     {
         if (player1Instance != null)
             player1Instance.transform.position = player1StartPos;
+
         if (player2Instance != null)
             player2Instance.transform.position = player2StartPos;
-        
+
+        // 위치 리셋 후 다시 중앙 바라보게
+        SetAllPlayersFacingCenter();
+
         if (ballInstance != null)
         {
             Ball ball = ballInstance.GetComponent<Ball>();
@@ -326,50 +379,57 @@ public class GameManager : MonoBehaviour
                 ball.ResetPosition(ballStartPos);
         }
     }
-    
+
     void EndRegularTime()
     {
         if (player1Score == player2Score)
         {
             isSuddenDeath = true;
-            Debug.Log("Sudden Death!");
+            Debug.Log("[GameManager] Sudden Death!");
         }
         else
         {
             EndGame();
         }
     }
-    
-    void EndGame()
-    {
-        isGameActive = false;
-        
-        if (SoundManager.Instance != null)
-        {
-            SoundManager.Instance.PlayWhistleSound();
-        }
-        
-        Debug.Log($"Game Over! Player1: {player1Score}, Player2: {player2Score}");
-    }
-    
+
     void TogglePause()
     {
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0f : 1f;
     }
-    
+
     public void RestartGame()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
-    
+
     public void QuitToTitle()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("TitleScene");
     }
-    
+
+    void EndGame()
+    {
+        isGameActive = false;
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayWhistleSound();
+
+        Debug.Log($"[GameManager] Game Over! P1={player1Score}, P2={player2Score}");
+
+        if (PlayerManager.Instance != null)
+        {
+            PlayerManager.Instance.lastP1Score = player1Score;
+            PlayerManager.Instance.lastP2Score = player2Score;
+        }
+
+        SceneManager.LoadScene("ResultScene");
+    }
+
     public int GetPlayer1Score() => player1Score;
     public int GetPlayer2Score() => player2Score;
     public float GetRemainingTime() => remainingTime;
@@ -377,4 +437,3 @@ public class GameManager : MonoBehaviour
     public bool IsPaused() => isPaused;
     public bool IsSuddenDeath() => isSuddenDeath;
 }
-
